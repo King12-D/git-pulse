@@ -4,15 +4,16 @@ import ContributionHeatmap from "@/components/ContributionHeatmap"
 import RepoCard from "@/components/RepoCard"
 
 // In v1, profile page is generated from GitHub data
-export default async function ProfilePage({ params }: { params: { username: string } }) {
+export default async function ProfilePage({ params }: { params: Promise<{ username: string }> }) {
     const session = await auth()
+    const { username } = await params;
 
     // Note: we'll fetch real user data from our DB / GitHub API later
     // For now, we mock it out to build the UI skeleton
-    const isOwnProfile = session?.user?.name === params.username || (!session?.user?.name && params.username === 'me');
+    const isOwnProfile = session?.user?.name === username || (!session?.user?.name && username === 'me');
 
     const mockUser = {
-        username: params.username,
+        username: username,
         name: "Developer Name",
         bio: "Fullstack developer building open source tools.",
         followers: 124,
