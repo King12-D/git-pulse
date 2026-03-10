@@ -2,7 +2,7 @@ import buildServer from "./app-setup";
 
 async function main() {
   const app = await buildServer();
-  const PORT = process.env || 3000;
+  const PORT = process.env.PORT || 3000;
 
   try {
     // await app.register(connectDB);
