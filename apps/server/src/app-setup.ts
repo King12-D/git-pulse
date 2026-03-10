@@ -59,8 +59,6 @@ export default async function buildServer(): Promise<FastifyInstance> {
         timestamp: new Date().toISOString(),
         responseTime: `${Date.now() - startTime}ms`,
       };
-    } catch (error) {
-      reply.code(503);
       return {
         status: "error",
         database: {
@@ -70,6 +68,8 @@ export default async function buildServer(): Promise<FastifyInstance> {
         timestamp: new Date().toISOString(),
         responseTime: `${Date.now() - startTime}ms`,
       };
+    } finally {
+      console.error("Health check failed:", error);
     }
   });
 
