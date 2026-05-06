@@ -122,11 +122,11 @@ function RobotHead() {
             <mesh geometry={headFrameGeometry} material={borderMaterial} />
 
             {/* antenna base */}
-            <mesh position={[0, 1.1, 0]} geometry={antennaBaseGeometry} material={borderMaterial} />
+            <mesh position={[0, 0.88, 0]} geometry={antennaBaseGeometry} material={borderMaterial} />
             {/* antenna stick */}
-            <mesh position={[0, 1.4, 0]} geometry={antennaStickGeometry} material={darkMaterial} />
+            <mesh position={[0, 1.18, 0]} geometry={antennaStickGeometry} material={darkMaterial} />
             {/* antenna bulb (glowing) */}
-            <mesh position={[0, 1.75, 0]} geometry={antennaBulbGeometry}>
+            <mesh position={[0, 1.52, 0]} geometry={antennaBulbGeometry}>
                 <meshStandardMaterial {...eyeMaterialProps} />
             </mesh>
 
@@ -144,8 +144,8 @@ function RobotHead() {
             </mesh>
 
             {/* ear pieces */}
-            <mesh position={[-1.05, 0, 0]} geometry={earGeometry} rotation={[0, 0, Math.PI / 2]} material={borderMaterial} />
-            <mesh position={[1.05, 0, 0]} geometry={earGeometry} rotation={[0, 0, Math.PI / 2]} material={borderMaterial} />
+            <mesh position={[-0.88, 0, 0]} geometry={earGeometry} rotation={[0, 0, Math.PI / 2]} material={borderMaterial} />
+            <mesh position={[0.88, 0, 0]} geometry={earGeometry} rotation={[0, 0, Math.PI / 2]} material={borderMaterial} />
         </group>
     );
 }
