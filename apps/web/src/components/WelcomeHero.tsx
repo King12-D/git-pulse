@@ -131,15 +131,15 @@ function RobotHead() {
             </mesh>
 
             {/* visor area (deeper dark) */}
-            <mesh position={[0, 0.2, 1.01]} geometry={visorGeometry} material={visorMaterial} />
+            <mesh position={[0, 0.2, 0.78]} geometry={visorGeometry} material={visorMaterial} />
 
             {/* left eye */}
-            <mesh ref={leftEyeRef} position={[-0.4, 0.2, 1.02]} geometry={eyeGeometry}>
+            <mesh ref={leftEyeRef} position={[-0.4, 0.2, 0.79]} geometry={eyeGeometry}>
                 <meshStandardMaterial {...eyeMaterialProps} />
             </mesh>
 
             {/* right eye */}
-            <mesh ref={rightEyeRef} position={[0.4, 0.2, 1.02]} geometry={eyeGeometry}>
+            <mesh ref={rightEyeRef} position={[0.4, 0.2, 0.79]} geometry={eyeGeometry}>
                 <meshStandardMaterial {...eyeMaterialProps} />
             </mesh>
 
