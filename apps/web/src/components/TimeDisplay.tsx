@@ -5,10 +5,12 @@ import { getRelativeTime } from '@/lib/utils';
 
 export default function TimeDisplay({ time }: { time: string | Date | number | null | undefined }) {
   const [display, setDisplay] = useState('');
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     if (!time) return;
     
+    setIsMounted(true);
     setDisplay(getRelativeTime(time));
     
     const interval = setInterval(() => {
@@ -20,7 +22,7 @@ export default function TimeDisplay({ time }: { time: string | Date | number | n
 
   if (!time) return null;
 
-  if (!display) {
+  if (!isMounted) {
     // Initial pre-hydration pass reduces text mismatch
     return <span suppressHydrationWarning>{getRelativeTime(time)}</span>;
   }
