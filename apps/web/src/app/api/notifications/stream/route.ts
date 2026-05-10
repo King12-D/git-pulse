@@ -1,7 +1,6 @@
 import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import validator from "validator";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +10,7 @@ export async function GET(req: Request) {
 return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-const username = validator.escape(session.user.login);
+const username = session.user.login;
 
   // set up sse headers
   const headers = new Headers({
