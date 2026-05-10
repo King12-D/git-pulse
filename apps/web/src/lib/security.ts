@@ -7,9 +7,13 @@ import { createHash } from "crypto";
  * @param key The raw API key generated for the user
  * @returns The hex-encoded SHA-256 hash
  */
-export async function hashApiKey(key: string): Promise<string> {
+export function hashApiKey(key: string): string {
+  const MAX_KEY_LENGTH = 4096;
   if (typeof key !== 'string' || key.length === 0) {
     throw new Error('Invalid API key: Key must be a non-empty string.');
+  }
+  if (key.length > MAX_KEY_LENGTH) {
+    throw new Error(`Invalid API key: Key must be at most ${MAX_KEY_LENGTH} characters.`);
   }
   try {
     const hashedKey = createHash("sha256").update(key).digest("hex");
