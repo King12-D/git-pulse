@@ -92,13 +92,13 @@ const handleSave = async () => {
             setSaving(false);
             return;
         }
-        if (typeof location !== 'string' || location.length < 1 || location.length > 50) {
-            setError('Location must be a non-empty string and not exceed 50 characters');
+        if (location.length > 50) {
+            setError('Location must not exceed 50 characters');
             setSaving(false);
             return;
         }
-        if (typeof company !== 'string' || company.length < 1 || company.length > 50) {
-            setError('Company must be a non-empty string and not exceed 50 characters');
+        if (company.length > 50) {
+            setError('Company must not exceed 50 characters');
             setSaving(false);
             return;
         }

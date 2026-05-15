@@ -62,7 +62,8 @@ const timer = setTimeout(async () => {
             console.error('Invalid search query length');
             return;
           }
-          const sanitizedQuery = query.replace(/[^a-zA-Z0-9\s]/g, '');
+          // Allow hashtags, @mentions, dots, hyphens - only strip truly dangerous chars
+          const sanitizedQuery = query.replace(/[<>\"'`]/g, '');
           const res = await fetch(`/api/search?q=${encodeURIComponent(sanitizedQuery)}`);
           if (res.ok) {
             const data = await res.json();

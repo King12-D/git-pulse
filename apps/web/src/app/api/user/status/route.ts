@@ -4,8 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 
 const StatusSchema = z.object({
-  emoji: z.string().max(10).regex(/^[\w\s]+$/).optional().nullable(),
-  text: z.string().max(80).regex(/^[\w\s]+$/).optional().nullable(),
+  emoji: z.string().max(10).optional().nullable(),
+  text: z.string().max(80).optional().nullable(),
 });
 
 export async function PUT(req: Request) {
@@ -22,12 +22,7 @@ try {
     return NextResponse.json({ error: "Invalid status payload", details: result.error.format() }, { status: 400 });
   }
   const { emoji, text } = result.data;
-  if (emoji && !emoji.match(/^[\w\s]+$/)) {
-    return NextResponse.json({ error: "Invalid emoji" }, { status: 400 });
-  }
-  if (text && !text.match(/^[\w\s]+$/)) {
-    return NextResponse.json({ error: "Invalid text" }, { status: 400 });
-  }
+
   try {
     const user = await prisma.user.update({
       where: { username: session.user.login },

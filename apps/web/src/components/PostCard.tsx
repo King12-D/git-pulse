@@ -64,6 +64,21 @@ export default function PostCard({ post, isNested }: {post: PostProps; isNested?
   const [showRepostMenu, setShowRepostMenu] = useState(false);
   const [showQuoteModal, setShowQuoteModal] = useState(false);
 
+  // Close repost menu on outside click
+  React.useEffect(() => {
+    if (!showRepostMenu) return;
+    
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('[data-repost-menu]')) {
+        setShowRepostMenu(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showRepostMenu]);
+
 const handleNavigate = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
     // Prevent routing if clicking interactive elements (links, buttons, icons, or images inside content)
@@ -305,7 +320,7 @@ const handleReact = async (emoji: string) => {
           
           <div className="flex-1 flex justify-end gap-5 relative">
             
-            <div className="relative flex items-center">
+            <div className="relative flex items-center" data-repost-menu>
               <button
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowRepostMenu(!showRepostMenu); }}
                 disabled={isReposting}

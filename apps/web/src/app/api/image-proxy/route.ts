@@ -121,12 +121,12 @@ async function processImageResponse(response: Response) {
       return NextResponse.json({ error: "Invalid content type" }, { status: 403 });
     }
 
-    // check content-length header before buffering
+    // check content-length header before buffering (optional - many servers don't send it)
     const contentLength = response.headers.get("content-length");
-    if (!contentLength || parseInt(contentLength, 10) > MAX_IMAGE_SIZE) {
+    if (contentLength && parseInt(contentLength, 10) > MAX_IMAGE_SIZE) {
       return NextResponse.json(
-        { error: !contentLength ? "Content-length required" : `Image exceeds the maximum allowed size of ${MAX_IMAGE_SIZE / (1024 * 1024)}MB.` },
-        { status: !contentLength ? 400 : 413 }
+        { error: `Image exceeds the maximum allowed size of ${MAX_IMAGE_SIZE / (1024 * 1024)}MB.` },
+        { status: 413 }
       );
     }
 
@@ -136,7 +136,16 @@ async function processImageResponse(response: Response) {
     if (buffer.byteLength > MAX_IMAGE_SIZE) {
       return NextResponse.json({ error: `Image exceeds the maximum allowed size of ${MAX_IMAGE_SIZE / (1024 * 1024)}MB.` }, { status: 413 });
     }
-    return NextResponse.next(response);
+
+    // Return the image buffer with proper headers
+    return new NextResponse(buffer, {
+      status: 200,
+      headers: {
+        'Content-Type': contentType,
+        'Cache-Control': 'public, max-age=31536000, immutable',
+        'Content-Length': buffer.byteLength.toString(),
+      }
+    });
   } catch (error) {
     console.error('Error processing image response:', error);
     return NextResponse.json({ error: 'Error processing image response' }, { status: 500 });
