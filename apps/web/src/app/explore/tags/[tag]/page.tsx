@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 import Link from "next/link";
 import PostCard, { PostProps } from "@/components/PostCard";
 import { calculatePostScore } from "@/lib/algo";
@@ -87,6 +88,9 @@ function mapPrismaPostToProps(p: any): PostProps {
 export default async function TagFeedPage({ params }: PageProps) {
     const { tag: rawTag } = await params;
     const normalizedTag = rawTag.toLowerCase();
+    
+    const session = await auth().catch(() => null);
+    const currentUsername = session?.user?.login;
 
     // fetch posts that contain this exact tag (case insensitive through prisma array bounds)
     const dbPosts = await prisma.post.findMany({
@@ -135,7 +139,7 @@ export default async function TagFeedPage({ params }: PageProps) {
 
         <div className="stagger-children">
                         {scoredPosts.map((post) =>
-          <PostCard key={post.id} post={post} />
+          <PostCard key={post.id} post={post} currentUsername={currentUsername} />
           )}
                     </div>
         }

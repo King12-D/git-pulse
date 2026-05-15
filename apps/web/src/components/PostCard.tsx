@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { ShareAndroidIcon, SyncIcon, TrashIcon, KebabHorizontalIcon } from '@primer/octicons-react';
@@ -57,9 +56,8 @@ export interface PostProps {
   externalUrl?: string;
 }
 
-export default function PostCard({ post, isNested }: {post: PostProps; isNested?: boolean;}) {
+export default function PostCard({ post, isNested, currentUsername }: {post: PostProps; isNested?: boolean; currentUsername?: string;}) {
   const router = useRouter();
-  const { data: session } = useSession();
   const [showComments, setShowComments] = useState(false);
   const [localReactions, setLocalReactions] = useState(post.reactions || []);
   const [isReposting, setIsReposting] = useState(false);
@@ -69,7 +67,7 @@ export default function PostCard({ post, isNested }: {post: PostProps; isNested?
   const [isDeleting, setIsDeleting] = useState(false);
 
   // Check if current user is the post author
-  const isAuthor = session?.user?.login === post.author.username;
+  const isAuthor = currentUsername === post.author.username;
 
   // Close repost menu on outside click
   React.useEffect(() => {
@@ -282,7 +280,7 @@ const handleReact = async (emoji: string) => {
           <span className="text-xs text-git-muted shrink-0 ml-auto"><TimeDisplay time={post.timestamp} /></span>
           
           {/* Options menu (delete, etc.) */}
-          {!isNested && isAuthor && (
+          {!isNested && isAuthor && currentUsername && (
             <div className="relative ml-2" data-options-menu>
               <button
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowOptionsMenu(!showOptionsMenu); }}
@@ -368,7 +366,7 @@ const handleReact = async (emoji: string) => {
         {/* quoted post */}
         {post.quotedPost && (
           <div className="relative z-10 mb-3 border border-git-border rounded-xl overflow-hidden mt-1 bg-git-bg opacity-90 transition-opacity hover:opacity-100">
-            <PostCard post={post.quotedPost} isNested={true} />
+            <PostCard post={post.quotedPost} isNested={true} currentUsername={currentUsername} />
           </div>
         )}
 

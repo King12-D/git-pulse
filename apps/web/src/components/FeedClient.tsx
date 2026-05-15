@@ -194,7 +194,7 @@ const handlePostCreated = (rawPost: any) => {
                     )}
 
                     {currentPosts.map((post) =>
-                    <PostCard key={post.id} post={post} />
+                    <PostCard key={post.id} post={post} currentUsername={userName} />
                     )}
                 </div>
             )}

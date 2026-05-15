@@ -6,7 +6,6 @@ import Sidebar from "@/components/Sidebar";
 import BottomNav from "@/components/BottomNav";
 import TopNav from "@/components/TopNav";
 import ThemeProvider from "@/components/ThemeProvider";
-import SessionProvider from "@/components/SessionProvider";
 import { SidebarSkeleton } from "@/components/Skeletons";
 import "./globals.css";
 
@@ -68,36 +67,34 @@ export default async function RootLayout({
     return (
         <html lang="en" data-theme="github">
             <body className="antialiased min-h-screen bg-git-bg text-git-text overflow-x-hidden font-sans">
-                <SessionProvider session={session}>
-                    <ThemeProvider>
-                        {isSignedIn ? (
-                            <>
-                                <div className="mx-auto w-full max-w-[1300px] pb-20 lg:pb-0">
-                                    <div className="flex justify-center w-full">
-                                        {/* left nav — async, wrapped in suspense */}
-                                        <Suspense fallback={<div className="hidden w-[275px] shrink-0 xl:block"><SidebarSkeleton /></div>}>
-                                            <Sidebar />
-                                        </Suspense>
+                <ThemeProvider>
+                    {isSignedIn ? (
+                        <>
+                            <div className="mx-auto w-full max-w-[1300px] pb-20 lg:pb-0">
+                                <div className="flex justify-center w-full">
+                                    {/* left nav — async, wrapped in suspense */}
+                                    <Suspense fallback={<div className="hidden w-[275px] shrink-0 xl:block"><SidebarSkeleton /></div>}>
+                                        <Sidebar />
+                                    </Suspense>
 
-                                        {/* main content area — pages dictate their own width and right sidebars */}
-                                        <main className="flex-1 min-w-0 border-x border-git-border">
-                                            <TopNav />
-                                            {children}
-                                        </main>
-                                    </div>
+                                    {/* main content area — pages dictate their own width and right sidebars */}
+                                    <main className="flex-1 min-w-0 border-x border-git-border">
+                                        <TopNav />
+                                        {children}
+                                    </main>
                                 </div>
+                            </div>
 
-                                {/* mobile bottom navigation */}
-                                <BottomNav username={session?.user?.login} />
-                            </>
-                        ) : (
-                            /* unauthenticated: clean full-viewport canvas for welcome page */
-                            <main className="w-full">
-                                {children}
-                            </main>
-                        )}
-                    </ThemeProvider>
-                </SessionProvider>
+                            {/* mobile bottom navigation */}
+                            <BottomNav username={session?.user?.login} />
+                        </>
+                    ) : (
+                        /* unauthenticated: clean full-viewport canvas for welcome page */
+                        <main className="w-full">
+                            {children}
+                        </main>
+                    )}
+                </ThemeProvider>
             </body>
         </html>
     );
