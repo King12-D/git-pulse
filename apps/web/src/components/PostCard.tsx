@@ -4,9 +4,10 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { ShareAndroidIcon, SyncIcon } from '@primer/octicons-react';
+import { ShareAndroidIcon, SyncIcon, TrashIcon, KebabHorizontalIcon } from '@primer/octicons-react';
 import RepoCard from './RepoCard';
 import AiSummary from './AiSummary';
 import ReactionPicker from './ReactionPicker';
@@ -58,11 +59,17 @@ export interface PostProps {
 
 export default function PostCard({ post, isNested }: {post: PostProps; isNested?: boolean;}) {
   const router = useRouter();
+  const { data: session } = useSession();
   const [showComments, setShowComments] = useState(false);
   const [localReactions, setLocalReactions] = useState(post.reactions || []);
   const [isReposting, setIsReposting] = useState(false);
   const [showRepostMenu, setShowRepostMenu] = useState(false);
   const [showQuoteModal, setShowQuoteModal] = useState(false);
+  const [showOptionsMenu, setShowOptionsMenu] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Check if current user is the post author
+  const isAuthor = session?.user?.login === post.author.username;
 
   // Close repost menu on outside click
   React.useEffect(() => {
@@ -78,6 +85,21 @@ export default function PostCard({ post, isNested }: {post: PostProps; isNested?
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showRepostMenu]);
+
+  // Close options menu on outside click
+  React.useEffect(() => {
+    if (!showOptionsMenu) return;
+    
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('[data-options-menu]')) {
+        setShowOptionsMenu(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showOptionsMenu]);
 
 const handleNavigate = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
@@ -152,6 +174,33 @@ const handleReact = async (emoji: string) => {
     } catch (error) {
       console.error('Error toggling reaction:', error);
       // Display error message to user
+    }
+  };
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!confirm('Are you sure you want to delete this post? This cannot be undone.')) {
+      return;
+    }
+    
+    setIsDeleting(true);
+    try {
+      const res = await fetch(`/api/posts/${post.id}`, { method: 'DELETE' });
+      if (res.ok) {
+        // Redirect to profile or refresh
+        router.refresh();
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to delete post');
+      }
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      alert('Failed to delete post');
+    } finally {
+      setIsDeleting(false);
+      setShowOptionsMenu(false);
     }
   };
 
@@ -231,6 +280,30 @@ const handleReact = async (emoji: string) => {
             </svg>
           }
           <span className="text-xs text-git-muted shrink-0 ml-auto"><TimeDisplay time={post.timestamp} /></span>
+          
+          {/* Options menu (delete, etc.) */}
+          {!isNested && isAuthor && (
+            <div className="relative ml-2" data-options-menu>
+              <button
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowOptionsMenu(!showOptionsMenu); }}
+                className="text-git-muted hover:text-git-text transition-colors p-1 rounded hover:bg-git-border/30"
+                title="Post options">
+                <KebabHorizontalIcon size={16} />
+              </button>
+              
+              {showOptionsMenu && (
+                <div className="absolute top-full right-0 mt-1 w-40 bg-git-bg border border-git-border rounded-lg shadow-xl overflow-hidden animate-fade-in z-50">
+                  <button
+                    onClick={handleDelete}
+                    disabled={isDeleting}
+                    className="w-full text-left px-4 py-2.5 text-sm text-git-error hover:bg-git-error/10 transition-colors font-medium flex items-center gap-2 disabled:opacity-50">
+                    <TrashIcon size={14} />
+                    {isDeleting ? 'Deleting...' : 'Delete post'}
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* text content (markdown rendered) */}
