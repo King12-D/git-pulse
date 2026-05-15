@@ -1,10 +1,14 @@
 {
   "name": "gitpulse",
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "pnpm --filter web dev",
-    "build": "pnpm --filter web build",
-    "lint": "pnpm --filter web lint"
+    "dev": "npm run dev --workspace=apps/web",
+    "build": "npm run build --workspace=apps/web",
+    "lint": "npm run lint --workspace=apps/web"
   },
   "engines": {
     "node": ">=18.0.0"
