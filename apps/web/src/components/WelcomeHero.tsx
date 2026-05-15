@@ -426,7 +426,7 @@ export default function WelcomeHero() {
                         </motion.h1>
 
                         <motion.p variants={fadeUp} className="text-[18px] text-[#8B949E] leading-relaxed mb-6">
-                            gitHub has 100M developers and zero social feed. gitPulse fixes that ; follow builders, post updates, ship releases, and get discovered by algorithm even with 0 followers.
+                            gitHub has 100M developers and zero social feed. gitPulse fixes that - follow builders, post updates, ship releases, and get discovered by algorithm even with 0 followers.
                         </motion.p>
 
                         <motion.div variants={fadeUp} className="mb-10 text-[15px]">
