@@ -24,9 +24,6 @@ const nextConfig: NextConfig = {
     poweredByHeader: false,
     reactStrictMode: true,
     
-    // Production optimizations
-    swcMinify: true,
-    
     // Security headers
     async headers() {
         return [
