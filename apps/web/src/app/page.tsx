@@ -321,7 +321,7 @@ export default async function HomePage() {
           discoverPosts={discoverPosts}
           followingPosts={followingPosts}
           activityPosts={activityPosts}
-          userName={session?.user?.name ?? ""}
+          userName={session?.user?.login ?? ""}
           userAvatar={session?.user?.image ?? ""} />
         
             </div>

@@ -187,8 +187,8 @@ const handleReact = async (emoji: string) => {
     try {
       const res = await fetch(`/api/posts/${post.id}`, { method: 'DELETE' });
       if (res.ok) {
-        // Redirect to profile or refresh
-        router.refresh();
+        // Reload the page to show updated feed
+        window.location.reload();
       } else {
         const data = await res.json();
         alert(data.error || 'Failed to delete post');

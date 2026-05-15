@@ -117,7 +117,7 @@ const newPosts = await prisma.post.findMany({
     } catch (error) {
       console.error("Feed SSE Error:", error);
     }
-  }, 5000);
+  }, 2000); // Poll every 2 seconds for faster updates
 
   // deterministic 55s timeout — close before vercel kills us at 60s
   const timeoutHandle = setTimeout(() => {
