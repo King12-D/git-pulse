@@ -30,7 +30,7 @@ importers:
         specifier: 6.1.0
         version: 6.1.0(@neondatabase/serverless@1.0.2)
       '@prisma/client':
-        specifier: ^6.1.0
+        specifier: 6.1.0
         version: 6.1.0(prisma@6.1.0)
       '@react-three/fiber':
         specifier: ^9.5.0
