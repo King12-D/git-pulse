@@ -131,16 +131,21 @@ const handleRepost = async (e: React.MouseEvent) => {
     if (isReposting) return;
     
     setIsReposting(true);
+    setShowRepostMenu(false); // Close menu immediately
+    
     try {
       const res = await fetch(`/api/posts/${post.id}/repost`, { method: 'POST' });
       if (res.ok) {
-        // UI optimistically shows repost success (could show a toast here)
+        // Show success feedback
+        alert('Reposted successfully!');
+        // Reload to show the repost
+        window.location.reload();
       } else {
         throw new Error(`Repost failed with status ${res.status}`);
       }
     } catch (error) {
       console.error('Error reposting:', error);
-      // Display error message to user
+      alert('Failed to repost. Please try again.');
     } finally {
       setIsReposting(false);
     }
