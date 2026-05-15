@@ -137,12 +137,14 @@ const dbProfileUser = await prisma.user.findUnique({
                             </a>
                           </div> :
 
-            <Link
-              href={`/profile/${username}/edit`}
+            <a
+              href={`https://github.com/${username}`}
+              target="_blank"
+              rel="noopener noreferrer"
               className="w-full py-1.5 bg-git-card border border-git-border rounded-md text-center text-sm font-semibold text-git-text hover:bg-git-hover transition-all duration-200 block">
               
-                                Edit profile
-                            </Link>
+                                Edit profile on GitHub
+                            </a>
             }
                     </div>
 
