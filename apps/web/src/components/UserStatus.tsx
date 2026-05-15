@@ -35,7 +35,7 @@ export default function UserStatus({ initialEmoji, initialText, isOwnProfile }: 
                 // Extract unicode emoji from URL
                 const match = url.match(/unicode\/([0-9a-f-]+)\.png/);
                 if (match) {
-                  const codePoints = match[1].split('-').map(hex => parseInt(hex, 16));
+                  const codePoints = match[1].split('-').map((hex: string) => parseInt(hex, 16));
                   return String.fromCodePoint(...codePoints);
                 }
               }
@@ -142,7 +142,7 @@ onClick={() => { setIsOpen(!isOpen); setErrorMessage(null); }}
       {isOpen && isOwnProfile && (
         <>
         <div className="fixed inset-0 z-[998] bg-black/80 backdrop-blur-sm" onClick={() => setIsOpen(false)} />
-        <div className="absolute top-full left-0 mt-2 z-[999] w-full min-w-[320px] max-w-sm bg-git-bg border border-git-border rounded-xl shadow-2xl overflow-hidden animate-fade-in">
+        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[999] w-full max-w-md mx-4 bg-git-bg border border-git-border rounded-xl shadow-2xl overflow-hidden animate-fade-in">
           <div className="flex items-center justify-between px-3 py-2 border-b border-git-border bg-git-card">
             <h3 className="text-xs font-semibold text-git-text">Edit status</h3>
             <button onClick={() => setIsOpen(false)} className="text-git-muted hover:text-git-text transition-colors p-1">
@@ -152,16 +152,27 @@ onClick={() => { setIsOpen(!isOpen); setErrorMessage(null); }}
 
           <div className="p-3 flex flex-col gap-3">
             {/* inputs */}
-            <div className="flex items-center gap-2 p-2 rounded-md bg-git-bg border border-git-border focus-within:border-git-accent transition-colors">
+            <div className="flex items-center gap-2 p-2 rounded-md bg-git-card border border-git-border focus-within:border-git-accent transition-colors">
+              <button
+                type="button"
+                onClick={() => {
+                  // Trigger native emoji picker
+                  const input = document.getElementById('status-emoji-input') as HTMLInputElement;
+                  if (input) input.focus();
+                }}
+                className="text-xl hover:scale-110 transition-transform"
+                title="Pick emoji"
+              >
+                {emoji || "😊"}
+              </button>
               <input
                 id="status-emoji-input"
                 type="text"
                 value={emoji}
                 onChange={(e) => setEmoji(e.target.value)}
                 placeholder="😊"
-                className="w-8 text-center bg-transparent border-none outline-none text-base placeholder:opacity-50"
+                className="w-0 h-0 opacity-0 absolute"
                 maxLength={10}
-                title="Type or paste any emoji (Win+. or Cmd+Ctrl+Space)"
               />
               <div className="w-px h-5 bg-git-border"></div>
               <input
@@ -176,16 +187,47 @@ onClick={() => { setIsOpen(!isOpen); setErrorMessage(null); }}
               />
             </div>
 
-            {/* suggestions */}
+            {/* Quick emoji picker button */}
             <div className="flex flex-col gap-1">
-              <span className="text-[10px] uppercase font-bold text-git-muted tracking-wider">Suggestions</span>
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase font-bold text-git-muted tracking-wider">Quick Select</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    // Open system emoji picker
+                    const textarea = document.createElement('textarea');
+                    textarea.style.position = 'fixed';
+                    textarea.style.opacity = '0';
+                    document.body.appendChild(textarea);
+                    textarea.focus();
+                    
+                    // Trigger emoji picker based on OS
+                    if (navigator.platform.includes('Mac')) {
+                      // Mac: Cmd + Ctrl + Space
+                      alert('Press Cmd + Ctrl + Space to open emoji picker');
+                    } else if (navigator.platform.includes('Win')) {
+                      // Windows: Win + .
+                      alert('Press Windows key + . (period) to open emoji picker');
+                    }
+                    
+                    textarea.addEventListener('input', (e: any) => {
+                      setEmoji(e.target.value);
+                      document.body.removeChild(textarea);
+                    });
+                  }}
+                  className="text-[10px] text-git-accent hover:underline"
+                >
+                  Open Emoji Picker
+                </button>
+              </div>
               <div className="flex flex-wrap gap-1.5 mt-1">
                 {suggestedEmojis.map((e) => (
                   <button
                     key={e}
+                    type="button"
                     onClick={() => setEmoji(emoji === e ? "" : e)}
                     className={`w-7 h-7 flex items-center justify-center rounded border transition-all text-sm ${
-                      emoji === e ? "border-git-accent bg-git-accent/10" : "border-git-border bg-git-bg hover:bg-git-hover"
+                      emoji === e ? "border-git-accent bg-git-accent/10" : "border-git-border bg-git-card hover:bg-git-hover"
                     }`}
                   >
                     {e}
@@ -197,6 +239,7 @@ onClick={() => { setIsOpen(!isOpen); setErrorMessage(null); }}
             {/* footer actions */}
             <div className="flex items-center justify-between mt-2 pt-3 border-t border-git-border">
               <button
+                type="button"
                 onClick={handleClear}
                 disabled={loading || (!emoji && !text)}
                 className="text-[11px] font-medium text-git-muted hover:text-red-400 transition-colors disabled:opacity-50"
@@ -205,12 +248,14 @@ onClick={() => { setIsOpen(!isOpen); setErrorMessage(null); }}
               </button>
               <div className="flex gap-2">
                 <button
+                  type="button"
                   onClick={() => setIsOpen(false)}
                   className="px-3 py-1.5 rounded-md text-[11px] font-medium text-git-text border border-git-border hover:bg-git-hover transition-colors"
                 >
                   Cancel
                 </button>
                 <button
+                  type="button"
                   onClick={() => handleSave()}
                   disabled={loading}
                   className="px-3 py-1.5 rounded-md text-[11px] font-medium bg-git-accent text-white hover:bg-git-accent/90 disabled:opacity-50 transition-all shadow-sm"
