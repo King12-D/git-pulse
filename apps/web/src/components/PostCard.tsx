@@ -305,9 +305,9 @@ const handleReact = async (emoji: string) => {
                   <button
                     onClick={handleDelete}
                     disabled={isDeleting}
-                    className="w-full text-left px-4 py-2.5 text-sm text-git-error hover:bg-git-error/10 transition-colors font-medium flex items-center gap-2 disabled:opacity-50">
+                    className="w-full text-left px-4 py-2.5 text-sm text-git-error hover:bg-git-error/10 transition-colors font-medium flex items-center gap-2 disabled:opacity-50 cursor-pointer">
                     <TrashIcon size={14} />
-                    {isDeleting ? 'Deleting...' : 'Delete post'}
+                    <span>{isDeleting ? 'Deleting...' : 'Delete post'}</span>
                   </button>
                 </div>
               )}
