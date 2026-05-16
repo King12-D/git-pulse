@@ -7,18 +7,5 @@
   NPM_FLAGS = "--version"
   NEXT_TELEMETRY_DISABLED = "1"
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-[functions]
-  node_bundler = "esbuild"
-  
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "SAMEORIGIN"
-    X-Content-Type-Options = "nosniff"
-    X-XSS-Protection = "1; mode=block"
-    Referrer-Policy = "origin-when-cross-origin"
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
