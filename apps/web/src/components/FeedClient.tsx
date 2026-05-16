@@ -38,30 +38,36 @@ export default function FeedClient({ discoverPosts, followingPosts, activityPost
     setTimeout(() => setIsTabLoading(false), 300);
   };
 
-  // live state
+  // live state with polling
   const [liveDiscover, setLiveDiscover] = useState<PostProps[]>(discoverPosts);
+  const [lastPollTime, setLastPollTime] = useState<string>(new Date().toISOString());
 
   useEffect(() => {
-    const eventSource = new EventSource("/api/feed/stream");
-
-    eventSource.onmessage = (event) => {
+    const pollFeed = async () => {
       try {
-        const data = JSON.parse(event.data);
-        if (data.type === "NEW_POST" && data.post) {
+        const res = await fetch(`/api/feed/stream?since=${encodeURIComponent(lastPollTime)}`);
+        if (!res.ok) return;
+        
+        const data = await res.json();
+        if (data.posts?.length > 0) {
           setLiveDiscover((prev) => {
-            // deduplicate protection
-            if (prev.find((p) => p.id === data.post.id)) return prev;
-const formattedPost = { ...data.post };
-            return [formattedPost, ...prev];
+            const newPosts = data.posts.filter((newPost: PostProps) => 
+              !prev.find((p) => p.id === newPost.id)
+            );
+            return [...newPosts, ...prev];
           });
         }
-      } catch (err) { console.error('Error processing SSE message:', err); }
+        if (data.timestamp) {
+          setLastPollTime(data.timestamp);
+        }
+      } catch (err) {
+        console.error('Error polling feed:', err);
+      }
     };
 
-    return () => {
-      eventSource.close();
-    };
-  }, []);
+    const interval = setInterval(pollFeed, 5000); // Poll every 5 seconds
+    return () => clearInterval(interval);
+  }, [lastPollTime]);
 
   // optimistic UI handler
 const handlePostCreated = (rawPost: any) => {

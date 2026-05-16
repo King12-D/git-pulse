@@ -15,63 +15,29 @@ interface Notification {
 export default function NotificationBell() {
   const [unreadCount, setUnreadCount] = useState(0);
 
-useEffect(() => {
-  let eventSource: EventSource | null = null;
-  let retryCount = 0;
-  const maxRetries = 3;
-  const retryDelay = 1000; // 1 second
-  const retryBackoffMultiplier = 2;
-
-  const initializeEventSource = () => {
-    try {
-      eventSource = new EventSource("/api/notifications/stream");
-
-      eventSource.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          if (typeof data.unreadCount === "number") {
-            setUnreadCount(data.unreadCount);
-          }
-        } catch (error) {
-          console.error('Error parsing event data:', error);
-          // Log additional context if available
-          if (eventSource) {
-            console.log('EventSource URL:', eventSource.url);
-          }
+  useEffect(() => {
+    const pollNotifications = async () => {
+      try {
+        const res = await fetch("/api/notifications/stream");
+        if (!res.ok) return;
+        
+        const data = await res.json();
+        if (typeof data.unreadCount === "number") {
+          setUnreadCount(data.unreadCount);
         }
-      };
+      } catch (error) {
+        console.error('Error polling notifications:', error);
+      }
+    };
 
-      eventSource.onerror = (error) => {
-        console.error('EventSource error:', error);
-        retryCount++;
-        if (retryCount < maxRetries) {
-          const delay = retryDelay * Math.pow(retryBackoffMultiplier, retryCount);
-          setTimeout(initializeEventSource, delay);
-        } else {
-          // Handle maximum retry limit reached
-          console.error('Maximum retries exceeded for EventSource connection.');
-          eventSource?.close();
-        }
-      };
-      eventSource.onopen = () => {
-        console.log('EventSource connected');
-        retryCount = 0; // Reset retry count on successful connection
-      };
-    } catch (error) {
-      console.error('Error initializing EventSource:', error);
-      // Log additional context if available
-      console.log('EventSource initialization attempt:', retryCount);
-    }
-  };
-
-  initializeEventSource();
-
-  return () => {
-    if (eventSource) {
-      eventSource.close();
-    }
-  };
-}, []);
+    // Poll immediately on mount
+    pollNotifications();
+    
+    // Then poll every 10 seconds
+    const interval = setInterval(pollNotifications, 10000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <Link

@@ -394,8 +394,8 @@ export default function WelcomeHero() {
         <div className="relative w-full bg-[#0D1117] text-[#E6EDF3] font-sans selection:bg-[#1F6FEB]/30 overflow-x-hidden">
             {/* Hero background image */}
             <div 
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10 mix-blend-luminosity pointer-events-none"
-                style={{ backgroundImage: 'url(/hero-blend.png)' }}
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 pointer-events-none"
+                style={{ backgroundImage: 'url(/hero.png)' }}
             />
             {/* Nav */}
             <nav className="fixed top-0 w-full z-50 bg-[#0D1117]/80 backdrop-blur-md border-b border-[#30363D] h-16 flex items-center justify-between px-4 md:px-6 lg:px-10">
