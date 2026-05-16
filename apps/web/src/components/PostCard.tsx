@@ -302,13 +302,13 @@ const handleReact = async (emoji: string) => {
               
               {showOptionsMenu && (
                 <div className="absolute top-full right-0 mt-1 w-40 bg-git-bg border border-git-border rounded-lg shadow-xl overflow-hidden animate-fade-in z-50">
-                  <button
+                  <div
                     onClick={handleDelete}
-                    disabled={isDeleting}
-                    className="w-full text-left px-4 py-2.5 text-sm text-git-error hover:bg-git-error/10 transition-colors font-medium flex items-center gap-2 disabled:opacity-50 cursor-pointer">
+                    className="w-full text-left px-4 py-2.5 text-sm text-git-error hover:bg-git-error/10 transition-colors font-medium flex items-center gap-2 cursor-pointer select-none"
+                    style={{ pointerEvents: isDeleting ? 'none' : 'auto', opacity: isDeleting ? 0.5 : 1 }}>
                     <TrashIcon size={14} />
                     <span>{isDeleting ? 'Deleting...' : 'Delete post'}</span>
-                  </button>
+                  </div>
                 </div>
               )}
             </div>
