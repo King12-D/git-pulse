@@ -14,6 +14,7 @@ export const authConfig = {
       },
     }),
   ],
+  trustHost: true,
   callbacks: {
     async jwt({ token, profile }) {
       if (profile?.login) {
