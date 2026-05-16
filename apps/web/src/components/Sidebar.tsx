@@ -15,10 +15,10 @@ export default async function Sidebar() {
     return (
         <aside className="hidden w-[275px] shrink-0 xl:block relative">
             <nav className="fixed w-[275px] top-0 flex flex-col h-screen px-4 pb-4">
-                {/* logo — github filled octicon mark */}
+                {/* logo */}
                 <div className="py-2">
                     <Link href="/" className="inline-flex items-center justify-center w-14 h-14 rounded-full hover:bg-white/10 transition-colors group">
-                        <MarkGithubIcon size={30} className="fill-git-text group-hover:fill-git-accent transition-colors" />
+                        <Image src="/logo.png" alt="GitPulse" width={32} height={32} className="group-hover:opacity-80 transition-opacity" />
                     </Link>
                 </div>
 

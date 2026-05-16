@@ -25,8 +25,8 @@ export const metadata: Metadata = {
     },
     description: "The social network for developers. Share your ships, engage with your network, and pulse with the heartbeat of GitHub.",
     icons: {
-        icon: "/icon.png",
-        apple: "/icon.png",
+        icon: "/logo.png",
+        apple: "/logo.png",
     },
     manifest: "/manifest.json",
     openGraph: {
