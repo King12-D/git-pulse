@@ -12,5 +12,8 @@
   "dependencies": {
     "isomorphic-dompurify": "^3.9.0",
     "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.7.4"
   }
 }
