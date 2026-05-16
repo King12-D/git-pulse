@@ -21,7 +21,43 @@ import RepoCard from "@/components/RepoCard";
 import FollowButton from "@/components/FollowButton";
 import { PeopleIcon, OrganizationIcon, LocationIcon, LinkIcon } from "@primer/octicons-react";
 import ProfileTabs from "@/components/ProfileTabs";
-import UserStatus from "@/components/UserStatus";
+
+// Fetch user status from GitHub GraphQL API
+async function getGitHubStatus(username: string, token: string): Promise<{ emoji: string | null; message: string | null } | null> {
+  try {
+    const response = await fetch('https://api.github.com/graphql', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `
+          query {
+            user(login: "${username}") {
+              status {
+                emoji
+                message
+              }
+            }
+          }
+        `
+      }),
+    });
+
+    const data = await response.json();
+    if (data?.data?.user?.status) {
+      return {
+        emoji: data.data.user.status.emoji,
+        message: data.data.user.status.message
+      };
+    }
+    return null;
+  } catch (error) {
+    console.error('Error fetching GitHub status:', error);
+    return null;
+  }
+}
 
 export default async function ProfilePage(props: {params: Promise<{username: string}>}) {
     const params = await props.params;
@@ -31,14 +67,15 @@ export default async function ProfilePage(props: {params: Promise<{username: str
   const isOwnProfile = session?.user?.login === username;
 
   // parallel data fetching — all at once for speed
-  const [ghUser, ghRepos, readme, contributions, pinnedRepos, activity, userStats] = await Promise.all([
+  const [ghUser, ghRepos, readme, contributions, pinnedRepos, activity, userStats, githubStatus] = await Promise.all([
     token ? getGitHubUser(username, token as string) : null,
     token ? getGitHubRepos(username, token as string, 6) : [],
     token ? getGitHubReadme(username, token as string) : null,
     token ? getContributionData(username, token as string) : null,
     token ? getGitHubPinnedRepos(username, token as string) : [],
     token ? getContributionActivity(username, token as string) : [],
-    token ? getUserStats(username, token as string) : null
+    token ? getUserStats(username, token as string) : null,
+    token ? getGitHubStatus(username, token as string) : null
   ]);
 
   if (ghUser) {
@@ -75,10 +112,10 @@ export default async function ProfilePage(props: {params: Promise<{username: str
     }
   }
 
-  // fetch user from prisma for status and privacy
+  // fetch user from prisma for privacy settings only
 const dbProfileUser = await prisma.user.findUnique({
   where: { username },
-  select: { statusEmoji: true, statusText: true, showContributions: true, showActivity: true }
+  select: { showContributions: true, showActivity: true }
 });
 
   const joinDate = new Date(ghUser.created_at).toLocaleDateString("en-US", { month: "long", year: "numeric" });
@@ -98,14 +135,15 @@ const dbProfileUser = await prisma.user.findUnique({
                             sizes="(max-width: 768px) 192px, 224px"
                           />
                         
-                        {/* status component — absolutely positioned over avatar on desktop / below on mobile */}
-                        <div className="absolute -bottom-2 -right-3 md:right-0 z-10">
-                            <UserStatus 
-                                initialEmoji={dbProfileUser?.statusEmoji || null} 
-                                initialText={dbProfileUser?.statusText || null} 
-                                isOwnProfile={isOwnProfile} 
-                            />
-                        </div>
+                        {/* GitHub status display */}
+                        {githubStatus && (githubStatus.emoji || githubStatus.message) && (
+                          <div className="absolute -bottom-2 -right-3 md:right-0 z-10">
+                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-git-border bg-git-bg shadow-sm sm:max-w-[280px]">
+                              {githubStatus.emoji && <span className="text-[16px] shrink-0">{githubStatus.emoji}</span>}
+                              {githubStatus.message && <span className="text-[13px] text-git-text truncate leading-tight">{githubStatus.message}</span>}
+                            </div>
+                          </div>
+                        )}
                     </div>
 
                     <div className="flex flex-col py-3">
