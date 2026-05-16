@@ -131,15 +131,21 @@ const handleRepost = async (e: React.MouseEvent) => {
     if (isReposting) return;
     
     setIsReposting(true);
-    setShowRepostMenu(false); // Close menu immediately
+    setShowRepostMenu(false);
     
     try {
       const res = await fetch(`/api/posts/${post.id}/repost`, { method: 'POST' });
       if (res.ok) {
-        // Show success feedback
-        alert('Reposted successfully!');
-        // Reload to show the repost
-        window.location.reload();
+        const data = await res.json();
+        if (data.action === 'reposted') {
+          // Success - just close menu, SSE will update feed
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 500);
+        } else {
+          // Unreposted
+          window.location.reload();
+        }
       } else {
         throw new Error(`Repost failed with status ${res.status}`);
       }

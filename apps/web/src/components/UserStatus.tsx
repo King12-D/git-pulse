@@ -141,7 +141,7 @@ onClick={() => { setIsOpen(!isOpen); setErrorMessage(null); }}
       {/* dropdown popover */}
       {isOpen && isOwnProfile && (
         <>
-        <div className="fixed inset-0 z-[998] bg-black/80 backdrop-blur-sm" onClick={() => setIsOpen(false)} />
+        <div className="fixed inset-0 z-[998] bg-git-bg/95 backdrop-blur-md" onClick={() => setIsOpen(false)} />
         <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[999] w-full max-w-md mx-4 bg-git-bg border border-git-border rounded-xl shadow-2xl overflow-hidden animate-fade-in">
           <div className="flex items-center justify-between px-3 py-2 border-b border-git-border bg-git-card">
             <h3 className="text-xs font-semibold text-git-text">Edit status</h3>
@@ -190,49 +190,29 @@ onClick={() => { setIsOpen(!isOpen); setErrorMessage(null); }}
             {/* Quick emoji picker button */}
             <div className="flex flex-col gap-1">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] uppercase font-bold text-git-muted tracking-wider">Quick Select</span>
+                <span className="text-[10px] uppercase font-bold text-git-muted tracking-wider">Pick Emoji</span>
                 <button
                   type="button"
                   onClick={() => {
-                    // Open system emoji picker
-                    const textarea = document.createElement('textarea');
-                    textarea.style.position = 'fixed';
-                    textarea.style.opacity = '0';
-                    document.body.appendChild(textarea);
-                    textarea.focus();
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.style.position = 'fixed';
+                    input.style.top = '50%';
+                    input.style.left = '50%';
+                    input.style.opacity = '0.01';
+                    input.style.width = '1px';
+                    input.style.height = '1px';
+                    document.body.appendChild(input);
+                    input.focus();
                     
-                    // Trigger emoji picker based on OS
-                    if (navigator.platform.includes('Mac')) {
-                      // Mac: Cmd + Ctrl + Space
-                      alert('Press Cmd + Ctrl + Space to open emoji picker');
-                    } else if (navigator.platform.includes('Win')) {
-                      // Windows: Win + .
-                      alert('Press Windows key + . (period) to open emoji picker');
-                    }
-                    
-                    textarea.addEventListener('input', (e: any) => {
-                      setEmoji(e.target.value);
-                      document.body.removeChild(textarea);
-                    });
+                    setTimeout(() => {
+                      document.body.removeChild(input);
+                    }, 100);
                   }}
-                  className="text-[10px] text-git-accent hover:underline"
+                  className="text-[10px] px-2 py-1 bg-git-accent text-white rounded hover:bg-git-accent/90"
                 >
-                  Open Emoji Picker
+                  {navigator.platform.includes('Win') ? 'Press Win + .' : 'Press Cmd+Ctrl+Space'}
                 </button>
-              </div>
-              <div className="flex flex-wrap gap-1.5 mt-1">
-                {suggestedEmojis.map((e) => (
-                  <button
-                    key={e}
-                    type="button"
-                    onClick={() => setEmoji(emoji === e ? "" : e)}
-                    className={`w-7 h-7 flex items-center justify-center rounded border transition-all text-sm ${
-                      emoji === e ? "border-git-accent bg-git-accent/10" : "border-git-border bg-git-card hover:bg-git-hover"
-                    }`}
-                  >
-                    {e}
-                  </button>
-                ))}
               </div>
             </div>
 
