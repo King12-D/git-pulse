@@ -427,7 +427,18 @@ const handleReact = async (emoji: string) => {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                navigator.clipboard.writeText(`${window.location.origin}/post/${post.id}`);
+                const url = `${window.location.origin}/post/${post.id}`;
+                if (navigator.share) {
+                  navigator.share({
+                    title: `Post by ${post.author.username}`,
+                    text: post.content.substring(0, 100),
+                    url: url
+                  }).catch(() => {
+                    navigator.clipboard.writeText(url);
+                  });
+                } else {
+                  navigator.clipboard.writeText(url);
+                }
               }}
               className="flex items-center gap-1.5 text-git-muted hover:text-git-accent transition-colors group"
               title="Share post">

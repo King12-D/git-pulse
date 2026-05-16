@@ -252,7 +252,13 @@ export default async function HomePage() {
         repostOf: {
           include: {
             author: true,
-            _count: { select: { comments: true, reactions: true } }
+            _count: { select: { comments: true, reactions: true } },
+            repostOf: {
+              include: {
+                author: true,
+                _count: { select: { comments: true, reactions: true } }
+              }
+            }
           }
         }
       },
@@ -287,7 +293,13 @@ export default async function HomePage() {
           repostOf: {
             include: {
               author: true,
-              _count: { select: { comments: true, reactions: true } }
+              _count: { select: { comments: true, reactions: true } },
+              repostOf: {
+                include: {
+                  author: true,
+                  _count: { select: { comments: true, reactions: true } }
+                }
+              }
             }
           }
         },

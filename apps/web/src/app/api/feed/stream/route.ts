@@ -40,7 +40,18 @@ export async function GET(req: NextRequest) {
       include: {
         author: { select: { username: true, githubId: true } },
         reactions: true,
-        repostOf: { include: { author: { select: { username: true, githubId: true } }, reactions: true } }
+        repostOf: { 
+          include: { 
+            author: { select: { username: true, githubId: true } }, 
+            reactions: true,
+            repostOf: {
+              include: {
+                author: { select: { username: true, githubId: true } },
+                reactions: true
+              }
+            }
+          } 
+        }
       },
       orderBy: { createdAt: "desc" },
       take: 20

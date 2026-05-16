@@ -400,7 +400,7 @@ export default function WelcomeHero() {
             {/* Nav */}
             <nav className="fixed top-0 w-full z-50 bg-[#0D1117]/80 backdrop-blur-md border-b border-[#30363D] h-16 flex items-center justify-between px-4 md:px-6 lg:px-10">
                 <div className="flex items-center gap-2 md:gap-3">
-                    <img src="/logo.png" alt="GitPulse" width="32" height="32" className="rounded" />
+                    <img src="/logo.png" alt="GitPulse" width="40" height="40" className="rounded-lg" />
                     <span className="font-semibold text-lg tracking-tight">GitPulse</span>
                 </div>
                 <div className="flex items-center gap-4">
