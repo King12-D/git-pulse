@@ -250,8 +250,7 @@ const handleReact = async (emoji: string) => {
     e.preventDefault();
     e.stopPropagation();
     const url = `${window.location.origin}/post/${post.id}`;
-    const text = `Check out this post by @${post.author.username} on GitPulse`;
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank', 'noopener,noreferrer');
+    window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`, '_blank', 'noopener,noreferrer');
     setShowShareMenu(false);
   };
 
@@ -259,8 +258,7 @@ const handleReact = async (emoji: string) => {
     e.preventDefault();
     e.stopPropagation();
     const url = `${window.location.origin}/post/${post.id}`;
-    const text = `Check out this post by @${post.author.username} on GitPulse: ${url}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
+    window.open(`https://wa.me/?text=${encodeURIComponent(url)}`, '_blank', 'noopener,noreferrer');
     setShowShareMenu(false);
   };
 

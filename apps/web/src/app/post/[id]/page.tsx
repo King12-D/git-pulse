@@ -13,15 +13,39 @@ import { notFound } from "next/navigation";
 
 export async function generateMetadata(props: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const params = await props.params;
-const post = await prisma.post.findUnique({
+  const post = await prisma.post.findUnique({
     where: { id: params.id },
-    select: { content: true, author: { select: { username: true } } }
+    select: { 
+      content: true, 
+      author: { select: { username: true, githubId: true } },
+      images: true,
+      repoEmbed: true
+    }
   });
+  
   if (!post) return { title: "Post Not Found | GitPulse" };
   if (!post.author || !post.author.username) return { title: "Post | GitPulse", description: post.content.slice(0, 160) };
+  
+  const description = post.content.slice(0, 160);
+  const imageUrl = post.images && post.images.length > 0 
+    ? post.images[0] 
+    : `https://avatars.githubusercontent.com/u/${post.author.githubId}?v=4`;
+  
   return {
-    title: `${post.author.username}'s post | GitPulse`,
-    description: post.content.slice(0, 160)
+    title: `${post.author.username} on GitPulse`,
+    description: description,
+    openGraph: {
+      title: `${post.author.username} on GitPulse`,
+      description: description,
+      images: [{ url: imageUrl }],
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${post.author.username} on GitPulse`,
+      description: description,
+      images: [imageUrl],
+    },
   };
 }
 

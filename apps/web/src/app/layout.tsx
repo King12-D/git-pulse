@@ -24,17 +24,6 @@ export const metadata: Metadata = {
         template: "%s | GitPulse",
     },
     description: "The social network for developers. Share your ships, engage with your network, and pulse with the heartbeat of GitHub.",
-    icons: {
-        icon: [
-            { url: "/logo.png", sizes: "32x32", type: "image/png" },
-            { url: "/logo.png", sizes: "16x16", type: "image/png" },
-            { url: "/logo.png", sizes: "192x192", type: "image/png" },
-        ],
-        apple: [
-            { url: "/logo.png", sizes: "180x180", type: "image/png" },
-        ],
-        shortcut: "/logo.png",
-    },
     manifest: "/manifest.json",
     openGraph: {
         title: "GitPulse",

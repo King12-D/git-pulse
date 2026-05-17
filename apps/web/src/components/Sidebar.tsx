@@ -17,8 +17,8 @@ export default async function Sidebar() {
             <nav className="fixed w-[275px] top-0 flex flex-col h-screen px-4 pb-4">
                 {/* logo */}
                 <div className="py-2">
-                    <Link href="/" className="inline-flex items-center justify-center w-16 h-16 rounded-full hover:bg-white/10 transition-colors group">
-                        <Image src="/logo.png" alt="GitPulse" width={56} height={56} className="group-hover:opacity-80 transition-opacity rounded-lg" />
+                    <Link href="/" className="inline-flex items-center justify-center w-20 h-20 rounded-full hover:bg-white/10 transition-colors group">
+                        <Image src="/logo.png" alt="GitPulse" width={72} height={72} className="group-hover:opacity-80 transition-opacity rounded-lg" />
                     </Link>
                 </div>
 

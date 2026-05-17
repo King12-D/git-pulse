@@ -169,7 +169,7 @@ function mapPrismaPostToProps(p: {
         ...mapPrismaPostToProps(p.repostOf),
         isRepost: true,
         repostedBy: p.author.username,
-        id: p.id // keep the new post ID for uniqueness in React keys
+        // Keep the original post ID for the link, not the repost ID
       };
     }
     // For Quote Reposts, continue execution but attach `quotedPost` recursively
